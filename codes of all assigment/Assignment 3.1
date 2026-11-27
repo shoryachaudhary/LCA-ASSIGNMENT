@@ -1,0 +1,39 @@
+#include <stdio.h>
+int main()
+{
+    int add, sub, div, multi, num1, num2, choice;
+    printf("Enter value of num1:");
+    scanf("%d", &num1);
+    printf("Enter value of num2:");
+    scanf("%d", &num2);
+    printf("\nSelect an Option\n");
+    printf("1. Addition\n2. Subtraction\n3. Division\n4. Multiplication\n");
+    printf("Enter the number for the operation you want to preform:");
+    scanf("%d", &choice);
+    switch (choice) {
+        case 1:
+        add=num1+num2;
+        printf("\nResult:%d+%d=%d\n", num1, num2, add);
+        break;
+        case 2:
+        sub=num1-num2;
+        printf("\nResult:%d-%d=%d\n", num1, num2, sub);
+        break;
+        case 3:
+        if (num2 !=0) {
+            div=num1/num2;
+            printf("\nResult:%d/%d=%d\n", num1, num2, div);
+        } else {
+            printf("\nError: Division by zero is not allowed\n");
+        }
+        break;
+        case 4:
+        multi=num1*num2;
+        printf("\nResult:%d*%d=%d\n", num1, num2, multi);
+        break;
+        default:
+        printf("\nIncorrect choise! please select between 1 and 4\n");
+        break;
+    }
+    return 0;
+}

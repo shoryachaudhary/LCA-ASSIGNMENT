@@ -1,0 +1,11 @@
+#include <stdio.h>
+int main() {
+    char str1[50], str2[50];
+    printf("Enter (single word): ");
+    scanf("%s", str1);
+    printf("Enter (with spaces): ");
+    getchar(); // clear newline
+    fgets(str2, sizeof(str2), stdin);
+    printf("str1: %s\nstr2: %s\n", str1, str2);
+    return 0;
+}

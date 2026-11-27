@@ -1,0 +1,14 @@
+#include <stdio.h>
+int main()
+{
+    int choice;
+    do
+    {
+        printf("Enter a choice:\n1) Print 'I love C!!'\n2) Exit\n Enter a choice (1 "", 2, etc): ");
+        scanf("%d", &choice);
+        if (choice==1){
+            printf("Print I Love C!!");
+        }
+    } while (choice!=2);
+return 0;    
+}

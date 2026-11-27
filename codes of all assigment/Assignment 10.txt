@@ -1,0 +1,44 @@
+#include <stdio.h>
+int is_leap_year(int year) {
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+}
+int day_of_week(int year, int month, int day) {
+    static int t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
+    if (month < 3) {
+        year -= 1;
+    }
+    return (year + year / 4 - year / 100 + year / 400 + t[month - 1] + day) % 7;
+}
+int main(void) {
+    int year;
+    const char *months[] = {
+        "January", "February", "March", "April",
+        "May", "June", "July", "August",
+        "September", "October", "November", "December"
+    };
+    int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    printf("Enter year: ");
+    if (scanf("%d", &year) != 1 || year <= 0) {
+        printf("Please enter a valid positive year.\n");
+        return 1;
+    }
+    if (is_leap_year(year)) {
+        days_in_month[1] = 29;
+    }
+    for (int m = 0; m < 12; m++) {
+        printf("\n------------ %s %d ------------\n", months[m], year);
+        printf("Sun  Mon  Tue  Wed  Thu  Fri  Sat\n");
+        int start_day = day_of_week(year, m + 1, 1);
+        for (int i = 0; i < start_day; i++) {
+            printf("     ");
+        }
+        for (int d = 1; d <= days_in_month[m]; d++) {
+            printf("%3d  ", d);
+            if ((start_day + d) % 7 == 0) {
+                printf("\n");
+            }
+        }
+        printf("\n");
+    }
+    return 0;
+}

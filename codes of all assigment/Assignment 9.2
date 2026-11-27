@@ -1,0 +1,122 @@
+#include <stdio.h>
+#include <string.h>
+#define FILENAME "robotic_arm_log.txt"
+#define MAX_SAFE_TEMP 75.0    // in Celsius
+#define MAX_SAFE_TORQUE 120.0 // in Nm
+typedef struct {
+    int recordId;
+    float jointAngle;   // in degrees
+    float motorTemp;    // in Celsius
+    float torque;       // in Nm
+    char status[20];    // e.g., "ACTIVE", "IDLE", "WARNING", "ERROR"
+} ArmRecord;
+void logRecord() {
+    FILE *file = fopen(FILENAME, "a");
+    if (file == NULL) {
+        printf("Error: Unable to open file for writing.\n");
+        return;
+    }
+    ArmRecord rec;
+    printf("\n--- Enter Robotic Arm Telemetry ---\n");
+    printf("Record ID: ");
+    scanf("%d", &rec.recordId);
+    printf("Joint Angle (degrees): ");
+    scanf("%f", &rec.jointAngle);
+    printf("Motor Temperature (C): ");
+    scanf("%f", &rec.motorTemp);
+    printf("Torque Value (Nm): ");
+    scanf("%f", &rec.torque);
+    printf("Operational Status (e.g., ACTIVE, IDLE, ERROR): ");
+    scanf("%19s", rec.status);
+    fprintf(file, "%d %.2f %.2f %.2f %s\n", 
+            rec.recordId, rec.jointAngle, rec.motorTemp, rec.torque, rec.status);
+    fclose(file);
+    printf("Record saved successfully!\n");
+}
+void analyzeRecords() {
+    FILE *file = fopen(FILENAME, "r");
+    if (file == NULL) {
+        printf("\nNo historical records found. Please log data first.\n");
+        return;
+    }
+    ArmRecord rec;
+    int totalRecords = 0;
+    int anomalyCount = 0;
+    printf("\n--- Historical Diagnostics Report ---\n");
+    printf("%-6s | %-10s | %-10s | %-10s | %-10s | %s\n", 
+           "ID", "Angle", "Temp(C)", "Torque", "Status", "Diagnostic Alert");
+    printf("--------------------------------------------------------------------------\n");
+    while (fscanf(file, "%d %f %f %f %19s", 
+                  &rec.recordId, &rec.jointAngle, &rec.motorTemp, &rec.torque, rec.status) == 5) {
+        totalRecords++;
+        int isAbnormal = 0;
+        char alertMsg[100] = "";
+        if (rec.motorTemp > MAX_SAFE_TEMP) {
+            strcat(alertMsg, "[HIGH TEMP] ");
+            isAbnormal = 1;
+        }
+        if (rec.torque > MAX_SAFE_TORQUE) {
+            strcat(alertMsg, "[EXCESS TORQUE] ");
+            isAbnormal = 1;
+        }
+        if ((rec.motorTemp > MAX_SAFE_TEMP && rec.torque > MAX_SAFE_TORQUE) || 
+            strcmp(rec.status, "ERROR") == 0) {
+            strcat(alertMsg, "[POTENTIAL FAILURE]");
+            isAbnormal = 1;
+        }
+        if (!isAbnormal) {
+            strcpy(alertMsg, "Normal");
+        } else {
+            anomalyCount++;
+        }
+        printf("%-6d | %-10.2f | %-10.2f | %-10.2f | %-10s | %s\n", 
+               rec.recordId, rec.jointAngle, rec.motorTemp, rec.torque, rec.status, alertMsg);
+    }
+
+    printf("--------------------------------------------------------------------------\n");
+    printf("Total Records Analyzed: %d | Anomalies Detected: %d\n", totalRecords, anomalyCount);
+
+    fclose(file);
+}
+int main() {
+    int choice;
+    while (1) {
+        printf("\n=== Robotic Arm Monitoring System ===\n");
+        printf("1. Record New Telemetry Data\n");
+        printf("2. Analyze Historical Records\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        
+        if (scanf("%d", &choice) != 1) {
+            printf("Invalid input. Exiting.\n");
+            break;
+        }
+        switch (choice) {
+            case 1:
+                logRecord();
+                break;
+            case 2:
+                analyzeRecords();
+                break;
+            case 3:
+                printf("Exiting program.\n");
+                return 0;
+            default:
+                printf("Invalid choice. Please select 1, 2, or 3.\n");
+        }
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
